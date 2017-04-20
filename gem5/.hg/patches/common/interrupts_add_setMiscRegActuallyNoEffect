@@ -1,0 +1,100 @@
+# HG changeset patch
+# Parent 46b40448d11251c095e60ac588307170a089ea7b
+# User Joel Hestness <jthestness@gmail.com>
+cpu: O3 CPU set miscellaneous registers without squashing
+
+Pipeline squashes cause all kinds of problems when handling GPU page faults.
+For example, suspending the CPU thread using a pseudo-instruction and then
+waking the CPU for a GPU page fault can result in the suspend pseudo-
+instruction getting squashed and reexecuted before the page fault interrupt is
+handled. To avoid many of these problems, add a function to allow x86
+interrupts and the ShaderMMU to set GPU miscellaneous registers without
+squashing the O3 CPU pipeline. This function should be used for all gem5-gpu
+GPU fault handling.
+
+diff --git a/src/cpu/checker/thread_context.hh b/src/cpu/checker/thread_context.hh
+--- a/src/cpu/checker/thread_context.hh
++++ b/src/cpu/checker/thread_context.hh
+@@ -285,6 +285,14 @@
+         actualTC->setMiscRegNoEffect(misc_reg, val);
+     }
+ 
++    void setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val)
++    {
++        DPRINTF(Checker, "Setting misc reg with no effect: %d to both Checker"
++                         " and O3..\n", misc_reg);
++        checkerTC->setMiscRegActuallyNoEffect(misc_reg, val);
++        actualTC->setMiscRegActuallyNoEffect(misc_reg, val);
++    }
++
+     void setMiscReg(int misc_reg, const MiscReg &val)
+     {
+         DPRINTF(Checker, "Setting misc reg with effect: %d to both Checker"
+diff --git a/src/cpu/o3/thread_context.hh b/src/cpu/o3/thread_context.hh
+--- a/src/cpu/o3/thread_context.hh
++++ b/src/cpu/o3/thread_context.hh
+@@ -239,6 +239,9 @@
+     /** Sets a misc. register. */
+     virtual void setMiscRegNoEffect(int misc_reg, const MiscReg &val);
+ 
++    /** Sets a misc. register with actually no effect (e.g. no squashes). */
++    virtual void setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val);
++
+     /** Sets a misc. register, including any side-effects the
+      * write might have as defined by the architecture. */
+     virtual void setMiscReg(int misc_reg, const MiscReg &val);
+diff --git a/src/cpu/o3/thread_context_impl.hh b/src/cpu/o3/thread_context_impl.hh
+--- a/src/cpu/o3/thread_context_impl.hh
++++ b/src/cpu/o3/thread_context_impl.hh
+@@ -306,6 +306,13 @@
+     conditionalSquash();
+ }
+ 
++template <class Impl>
++void
++O3ThreadContext<Impl>::setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val)
++{
++    cpu->setMiscRegNoEffect(misc_reg, val, thread->threadId());
++}
++
+ #endif//__CPU_O3_THREAD_CONTEXT_IMPL_HH__
+ template <class Impl>
+ void
+diff --git a/src/cpu/simple_thread.hh b/src/cpu/simple_thread.hh
+--- a/src/cpu/simple_thread.hh
++++ b/src/cpu/simple_thread.hh
+@@ -390,6 +390,12 @@
+     }
+ 
+     void
++    setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val, ThreadID tid = 0)
++    {
++        return isa->setMiscRegNoEffect(misc_reg, val);
++    }
++
++    void
+     setMiscReg(int misc_reg, const MiscReg &val, ThreadID tid = 0)
+     {
+         return isa->setMiscReg(misc_reg, val, tc);
+diff --git a/src/cpu/thread_context.hh b/src/cpu/thread_context.hh
+--- a/src/cpu/thread_context.hh
++++ b/src/cpu/thread_context.hh
+@@ -231,6 +231,8 @@
+ 
+     virtual void setMiscRegNoEffect(int misc_reg, const MiscReg &val) = 0;
+ 
++    virtual void setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val) = 0;
++
+     virtual void setMiscReg(int misc_reg, const MiscReg &val) = 0;
+ 
+     virtual int flattenIntIndex(int reg) = 0;
+@@ -438,6 +440,9 @@
+     void setMiscRegNoEffect(int misc_reg, const MiscReg &val)
+     { return actualTC->setMiscRegNoEffect(misc_reg, val); }
+ 
++    void setMiscRegActuallyNoEffect(int misc_reg, const MiscReg &val)
++    { return actualTC->setMiscRegActuallyNoEffect(misc_reg, val); }
++
+     void setMiscReg(int misc_reg, const MiscReg &val)
+     { return actualTC->setMiscReg(misc_reg, val); }
+ 

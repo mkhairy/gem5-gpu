@@ -1,0 +1,32 @@
+Before you get started, ensure that you have any gcc >>4.7 (forcompiling the simulator) and gcc 4.4 (for compiling the workloads) installed on your machine 
+
+1- create a new file at your home directory ( ./hgrc) and add the following to it
+
+[extensions]
+\mq=
+
+[ui]
+username = Mahmoud Khairy <abdallm@purdue.edu>
+
+2- Download
+download the simulator by following the steps in the next page:
+https://gem5-gpu.cs.wisc.edu/wiki/start
+download the benchmarks by following the steps in the next page:
+https://gem5-gpu.cs.wisc.edu/wiki/benchmarks
+
+3-
+Run the attached git-diff script in at "download" directory
+isnan.patch
+
+4- Compile:
+make gcc 4.7 as your defulat compier and build the gem-gpu by the following command
+cd gem5
+scons build/X86_VI_hammer_GPU/gem5.opt --default=X86 EXTRAS=../gem5-gpu/src:../gpgpu-sim/ PROTOCOL=VI_hammer GPGPU_SIM=True
+
+5- use gcc 4.4 to compile workload
+[gem5-gpu/benchmarks] cd rodinia/backprop
+[gem5-gpu/benchmarks/rodinia/backprop] make gem5-fusion
+
+6- run the workload by using the command
+build/VI_hammer/gem5.opt ../gem5-gpu/configs/se_fusion.py -c ../benchmarks/rodinia/backprop/gem5_fusion_backprop -o "16"
+

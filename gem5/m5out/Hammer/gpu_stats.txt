@@ -1,0 +1,13 @@
+spa frequency: 0.69979 GHz
+spa period: 1429 ticks
+kernel times (ticks):
+start, end, start, end, ..., exit
+203373851, 211743474, 271214197, 277451752, 1426228500
+
+shader CTA times (ticks):
+shader, CTA ID, start, end, start, end, ..., exit
+1, 0, 203622497, 209981547, 1426228500
+2, 0, 271462843, 277140260, 1426228500
+
+total kernel time (ticks) = 14607178
+

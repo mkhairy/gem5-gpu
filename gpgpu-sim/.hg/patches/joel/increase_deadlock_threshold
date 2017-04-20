@@ -1,0 +1,23 @@
+# HG changeset patch
+# Parent b39834880185b63fc29dedb08b989710a3346aa3
+# User Joel Hestness <jthestness@gmail.com>
+shader: Increase core deadlock threshold
+
+Set the core deadlock threshold to 2,000,000 cycles. This is set to be longer
+than the deadlock threshold in other parts of the system, because things like
+the memory system (ShaderLSQ, Ruby) should indicate deadlock before the shader
+core, since accesses originate from activity in the core. This is also
+reasonably longer than GPU page faults (<15,000 cycles).
+
+diff --git a/gpgpu-sim/gpu-sim.cc b/gpgpu-sim/gpu-sim.cc
+--- a/gpgpu-sim/gpu-sim.cc
++++ b/gpgpu-sim/gpu-sim.cc
+@@ -1244,7 +1244,7 @@
+        }
+     }
+ 
+-    if (!(gpu_sim_cycle % 20000)) {
++    if (!(gpu_sim_cycle % 2000000)) {
+        // deadlock detection 
+        if (m_config.gpu_deadlock_detect && gpu_sim_insn == last_gpu_sim_insn) {
+           gpu_deadlock = true;

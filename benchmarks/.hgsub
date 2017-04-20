@@ -1,0 +1,14 @@
+
+common = common
+cpu-gpu-coord = cpu-gpu-coord
+dcmbmk = dcmbmk
+libcuda = libcuda
+libopencl = libopencl
+lonestar = lonestar
+pannotia = pannotia
+parboil = parboil
+rodinia = rodinia
+rodinia-nocopy = rodinia-nocopy
+rodinia-omp = rodinia-omp
+unittests = unittests
+

@@ -1,0 +1,72 @@
+# HG changeset patch
+# Parent bc5dc4f240f0ebadc6038f38d81b7fc5e75ae5b1
+# User Joel Hestness <jthestness@gmail.com>
+shader: Round-robin scheduler priority
+
+The default scheduler prioritization often starves higher-index schedulers,
+because the low index schedulers are always allowed to issue first. Shuffle the
+scheduler priority by round-robining the index of the first scheduler. Note: it
+was found empirically that this tends to perform better in the presence of
+thread barriers. However, it does not appear that Fermi or Maxwell do this, so
+this option is disabled by default.
+
+diff --git a/gpgpu-sim/gpu-sim.cc b/gpgpu-sim/gpu-sim.cc
+--- a/gpgpu-sim/gpu-sim.cc
++++ b/gpgpu-sim/gpu-sim.cc
+@@ -340,6 +340,9 @@
+     option_parser_register(opp, "-gpgpu_coalesce_arch", OPT_INT32, &gpgpu_coalesce_arch, 
+                             "Coalescing arch (default = 13, anything else is off for now)", 
+                             "13");
++    option_parser_register(opp, "-gpgpu_cycle_sched_prio", OPT_BOOL, &gpgpu_cycle_sched_prio,
++                            "Whether to cycle the priority of warp schedulers (default=false)",
++                            "0");
+     option_parser_register(opp, "-gpgpu_num_sched_per_core", OPT_INT32, &gpgpu_num_sched_per_core, 
+                             "Number of warp schedulers per core", 
+                             "1");
+diff --git a/gpgpu-sim/shader.cc b/gpgpu-sim/shader.cc
+--- a/gpgpu-sim/shader.cc
++++ b/gpgpu-sim/shader.cc
+@@ -141,7 +141,8 @@
+                                          CONCRETE_SCHEDULER_WARP_LIMITING:
+                                          NUM_CONCRETE_SCHEDULERS;
+     assert ( scheduler != NUM_CONCRETE_SCHEDULERS );
+-    
++
++    m_scheduler_prio = 0;
+     for (int i = 0; i < m_config->gpgpu_num_sched_per_core; i++) {
+         switch( scheduler )
+         {
+@@ -707,9 +708,13 @@
+ }
+ 
+ void shader_core_ctx::issue(){
++    if (m_config->gpgpu_cycle_sched_prio) {
++        m_scheduler_prio = (m_scheduler_prio + 1) % schedulers.size();
++    }
+     //really is issue;
+     for (unsigned i = 0; i < schedulers.size(); i++) {
+-        schedulers[i]->cycle();
++        unsigned sched_index = (m_scheduler_prio + i) % schedulers.size();
++        schedulers[sched_index]->cycle();
+     }
+ }
+ 
+diff --git a/gpgpu-sim/shader.h b/gpgpu-sim/shader.h
+--- a/gpgpu-sim/shader.h
++++ b/gpgpu-sim/shader.h
+@@ -1298,6 +1298,7 @@
+     
+     bool gpgpu_dwf_reg_bankconflict;
+ 
++    bool gpgpu_cycle_sched_prio;
+     int gpgpu_num_sched_per_core;
+     int gpgpu_max_insn_issue_per_warp;
+ 
+@@ -1842,6 +1843,7 @@
+     opndcoll_rfu_t            m_operand_collector;
+ 
+     //schedule
++    unsigned m_scheduler_prio;
+     std::vector<scheduler_unit*>  schedulers;
+ 
+     // execute

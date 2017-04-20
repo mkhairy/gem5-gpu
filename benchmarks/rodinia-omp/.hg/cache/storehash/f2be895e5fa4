@@ -1,0 +1,4 @@
+# https://gem5-gpu.cs.wisc.edu/repo/benchmarks/rodinia-omp
+bookmarks = da39a3ee5e6b4b0d3255bfef95601890afd80709
+store/phaseroots = da39a3ee5e6b4b0d3255bfef95601890afd80709
+store/00changelog.i = b2194115ea6b2a472918bb5883d20b0166953086

@@ -1,0 +1,13 @@
+compling remaingin workloads
+Jason email
+ask:
+DMA is Cope engine. TBE is MSHR
+why DRAM data utilization is different
+how many entris should be there
+
+see why nocopy does  not work
+under the config baseline with fusiona nd MI protcol
+under the output (IPC, L1 cache hit rate, MSHRs)
+config the baseline (memory shouldbe large), L1 cache should be large (read the paper), L3 cahce i
+understand MI protcol
+update the MI protocl for regsion

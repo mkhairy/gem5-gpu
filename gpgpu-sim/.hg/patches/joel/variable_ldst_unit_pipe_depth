@@ -1,0 +1,25 @@
+# HG changeset patch
+# Parent f515526a286f059ae189dc32e466ead28cb99975
+# User Joel Hestness <jthestness@gmail.com>
+shader: Set ldst_unit pipe depth appropriately
+
+The end of the ldst_unit pipeline depth was statically set to be 3 stages, but
+we want to be able to parameterize the pipeline depth. Parameterization allows
+modeling correct shared memory load-to-use latency for Fermi and Maxwell
+separately.
+
+diff --git a/gpgpu-sim/shader.cc b/gpgpu-sim/shader.cc
+--- a/gpgpu-sim/shader.cc
++++ b/gpgpu-sim/shader.cc
+@@ -1938,9 +1938,9 @@
+        unsigned warp_id = pipe_reg.warp_id();
+        if( pipe_reg.is_load() ) {
+            if( pipe_reg.space.get_type() == shared_space ) {
+-               if( m_pipeline_reg[2]->empty() ) {
++               if( m_pipeline_reg[m_pipeline_depth-1]->empty() ) {
+                    // new shared memory request
+-                   move_warp(m_pipeline_reg[2],m_dispatch_reg);
++                   move_warp(m_pipeline_reg[m_pipeline_depth-1],m_dispatch_reg);
+                    m_dispatch_reg->clear();
+                }
+            } else {

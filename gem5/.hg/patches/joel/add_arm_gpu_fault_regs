@@ -1,0 +1,77 @@
+# HG changeset patch
+# Parent ba58ef9d35de4752f93b655a0bbcd676b07def18
+# User Joel Hestness <jthestness@gmail.com>
+ARM: Add GPU fault registers
+
+These are required to get gem5-gpu to compile and still have mostly
+ISA-agnostic code in the ShaderMMU.
+* * *
+arch: ARM: Add GPU page fault stack pointer register
+
+A CPU thread handling a GPU page fault can trigger numerous spurious callbacks
+to the faulting GPU, leaving the ShaderMMU to check if a fault is complete
+every time one of the callbacks occurs. This can lead to numerous fault
+handling race conditions, corner cases, and unnecessary page walks. To cut down
+on these spurious callbacks, track the CPU thread's stack pointer from when it
+entered the kernel to handle the GPU page fault.
+
+This patch adds the ARM register for this.
+
+diff -r ba58ef9d35de src/arch/arm/miscregs.hh
+--- a/src/arch/arm/miscregs.hh	Fri Sep 04 17:59:47 2015 -0500
++++ b/src/arch/arm/miscregs.hh	Fri Sep 04 17:59:54 2015 -0500
+@@ -673,7 +673,13 @@
+         MISCREG_A64_UNIMPL,             // 604
+         MISCREG_UNKNOWN,                // 605
+ 
+-        NUM_MISCREGS                    // 606
++        // GPU fault register
++        MISCREG_GPU_FAULT,              // 606
++        MISCREG_GPU_FAULTADDR,          // 607
++        MISCREG_GPU_FAULTCODE,          // 608
++        MISCREG_GPU_FAULT_RSP,          // 609
++
++        NUM_MISCREGS                    // 610
+     };
+ 
+     enum MiscRegInfo {
+@@ -1353,7 +1359,13 @@
+         "cp14_unimpl",
+         "cp15_unimpl",
+         "a64_unimpl",
+-        "unknown"
++        "unknown",
++
++        // GPU fault registers
++        "gpuf",
++        "gpufaddr",
++        "gpufcode",
++        "gpufrsp"
+     };
+ 
+     static_assert(sizeof(miscRegName) / sizeof(*miscRegName) == NUM_MISCREGS,
+@@ -1843,6 +1855,24 @@
+         Bitfield<9, 0> res1_9_0_el2;
+    EndBitUnion(CPTR)
+ 
++   /**
++   * Register for active GPU page fault
++   * May need to increase to more bits if more than 1 GPU is in the system
++   */
++   BitUnion64(GPUFaultReg)
++      Bitfield<1, 0> inFault;
++   EndBitUnion(GPUFaultReg)
++
++   BitUnion64(GPUFaultCode)
++      Bitfield<0> present;
++      Bitfield<1> write;
++      Bitfield<2> user;
++      Bitfield<3> reserved;
++      Bitfield<4> fetch;
++   EndBitUnion(GPUFaultCode)
++
++   BitUnion64(GPUFaultRSPReg)
++   EndBitUnion(GPUFaultRSPReg)
+ 
+     // Checks read access permissions to coproc. registers
+     bool canReadCoprocReg(MiscRegIndex reg, SCR scr, CPSR cpsr,

@@ -1,0 +1,36 @@
+# HG changeset patch
+# Parent 2427b2da02281255939df6eef9669ec18ab884b8
+# User Joel Hestness <jthestness@gmail.com>
+mem: Add a memory command for fences
+
+To communicate fence requests between the CudaCore and the ShaderLSQ, we need
+to add a packet MemCmd type.
+
+This patch will be used by follow-on patches to gem5-gpu.
+
+diff --git a/src/mem/packet.cc b/src/mem/packet.cc
+--- a/src/mem/packet.cc
++++ b/src/mem/packet.cc
+@@ -200,6 +200,10 @@
+       "FlushAllReq" },
+     /* FlushAll Response */
+     { SET3(IsResponse, IsFlush, IsInvalidate), InvalidCmd, "FlushAllResp" },
++    /* Fence Request */
++    { SET2(IsRequest, NeedsResponse), FenceResp, "FenceReq" },
++    /* Fence Response */
++    { SET1(IsResponse), InvalidCmd, "FenceResp" },
+ };
+ 
+ bool
+diff --git a/src/mem/packet.hh b/src/mem/packet.hh
+--- a/src/mem/packet.hh
++++ b/src/mem/packet.hh
+@@ -130,6 +130,8 @@
+         InvalidateResp,
+         FlushAllReq,      // Flush entire cache request
+         FlushAllResp,
++        FenceReq,       // Enforce memory access ordering based on pkt contents
++        FenceResp,      // Fence operation has completed
+         NUM_MEM_CMDS
+     };
+ 

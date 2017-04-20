@@ -1,0 +1,25 @@
+# example repository config (see "hg help config" for more info)
+[paths]
+default = http://repo.gem5.org/gem5
+
+# path aliases to other clones of this repo in URLs or filesystem paths
+# (see "hg help config.paths" for more info)
+#
+# default-push = ssh://jdoe@example.net/hg/jdoes-fork
+# my-fork      = ssh://jdoe@example.net/hg/jdoes-fork
+# my-clone     = /home/jdoe/jdoes-clone
+
+[ui]
+# name and email (local to this repository, optional), e.g.
+# username = Jane Doe <jdoe@example.com>
+
+# The following lines were automatically added by gem5/SConstruct
+# to provide the gem5 style-checking hooks
+[extensions]
+style = /home/mkhairy/gem5-gpu2/gem5/util/style.py
+
+[hooks]
+pretxncommit.style = python:style.check_style
+pre-qrefresh.style = python:style.check_style
+# End of SConstruct additions
+

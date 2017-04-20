@@ -1,0 +1,56 @@
+# HG changeset patch
+# Parent 8cdbf0477959bd3c20f9c7abe03e4d342d764c9c
+# User Joel Hestness <jthestness@gmail.com>
+ldst_unit: Fix shared load-to-use latency
+
+Shared memory loads in Fermi and Maxwell have load-to-use latencies of 17 to 24
+cycles, but GPGPU-Sim was modeling these latencies as ~8 cycles. To fix this,
+parameterize and lengthen the shared memory access pipeline. With single
+clocked LD/ST unit, the default depth is 13 cycles, so that the load-to-use
+latency is 17 (4 for issue+operand collection) consistent with Fermi.
+
+diff --git a/abstract_hardware_model.h b/abstract_hardware_model.h
+--- a/abstract_hardware_model.h
++++ b/abstract_hardware_model.h
+@@ -269,6 +269,7 @@
+     unsigned gpgpu_shmem_sizeDefault;
+     unsigned gpgpu_shmem_sizePrefL1;
+     unsigned gpgpu_shmem_sizePrefShared;
++    unsigned gpgpu_shmem_access_latency;
+ 
+     // texture and constant cache line sizes (used to determine number of memory accesses)
+     unsigned gpgpu_cache_texl1_linesize;
+diff --git a/gpgpu-sim/gpu-sim.cc b/gpgpu-sim/gpu-sim.cc
+--- a/gpgpu-sim/gpu-sim.cc
++++ b/gpgpu-sim/gpu-sim.cc
+@@ -274,6 +274,9 @@
+     option_parser_register(opp, "-gpgpu_shmem_size_PrefShared", OPT_UINT32, &gpgpu_shmem_sizePrefShared,
+                  "Size of shared memory per shader core (default 16kB)",
+                  "16384");
++    option_parser_register(opp, "-gpgpu_shmem_access_latency", OPT_UINT32, &gpgpu_shmem_access_latency,
++                 "Shared load buffer depth (default 13: Fermi, Maxwell = 21)",
++                 "13");
+     option_parser_register(opp, "-gpgpu_shmem_num_banks", OPT_UINT32, &num_shmem_bank, 
+                  "Number of banks in the shared memory in each shader core (default 16)",
+                  "16");
+diff --git a/gpgpu-sim/shader.cc b/gpgpu-sim/shader.cc
+--- a/gpgpu-sim/shader.cc
++++ b/gpgpu-sim/shader.cc
+@@ -1650,7 +1650,7 @@
+                       const memory_config *mem_config,  
+                       shader_core_stats *stats,
+                       unsigned sid,
+-                      unsigned tpc ) : pipelined_simd_unit(NULL,config,3,core), m_next_wb(config)
++                      unsigned tpc ) : pipelined_simd_unit(NULL,config,config->gpgpu_shmem_access_latency,core), m_next_wb(config)
+ {
+     init( icnt,
+           mf_allocator,
+@@ -1686,7 +1686,7 @@
+                       unsigned sid,
+                       unsigned tpc,
+                       l1_cache* new_l1d_cache )
+-    : pipelined_simd_unit(NULL,config,3,core), m_L1D(new_l1d_cache), m_next_wb(config)
++    : pipelined_simd_unit(NULL,config,config->gpgpu_shmem_access_latency,core), m_L1D(new_l1d_cache), m_next_wb(config)
+ {
+     init( icnt,
+           mf_allocator,

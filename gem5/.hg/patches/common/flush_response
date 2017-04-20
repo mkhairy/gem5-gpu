@@ -1,0 +1,52 @@
+# HG changeset patch
+# Parent 37ab6c5f444696452879af9aceaf3c17c646576b
+Mem: Require flush requests to have a response
+* * *
+Ruby: Fix flush response request leak
+
+The flush-response patch makes the FlushReq MemCmd require a response, which
+causes requests to not be deleted in the packet destructor during cooldown of
+the caches before checkpointing. Requests are 72B, so larger systems with
+reasonably large caches leak a lot of memory for each checkpoint taken.
+
+NOTE: This change will be folded into the jason/flush-responses patch.
+
+diff --git a/src/mem/packet.cc b/src/mem/packet.cc
+--- a/src/mem/packet.cc
++++ b/src/mem/packet.cc
+@@ -184,7 +184,11 @@
+     /* PrintReq */
+     { SET2(IsRequest, IsPrint), InvalidCmd, "PrintReq" },
+     /* Flush Request */
+-    { SET3(IsRequest, IsFlush, NeedsExclusive), InvalidCmd, "FlushReq" },
++    { SET4(IsRequest, IsFlush, NeedsExclusive, NeedsResponse), FlushResp,
++           "FlushReq" },
++    /* Flush Response */
++    { SET3(IsResponse, IsFlush, NeedsExclusive), InvalidCmd,
++           "FlushResp" },
+     /* Invalidation Request */
+     { SET4(IsInvalidate, IsRequest, NeedsExclusive, NeedsResponse),
+       InvalidateResp, "InvalidateReq" },
+diff --git a/src/mem/packet.hh b/src/mem/packet.hh
+--- a/src/mem/packet.hh
++++ b/src/mem/packet.hh
+@@ -125,6 +125,7 @@
+         // Fake simulator-only commands
+         PrintReq,       // Print state matching address
+         FlushReq,      //request for a cache flush
++        FlushResp,
+         InvalidateReq,   // request for address to be invalidated
+         InvalidateResp,
+         NUM_MEM_CMDS
+diff --git a/src/mem/ruby/system/Sequencer.cc b/src/mem/ruby/system/Sequencer.cc
+--- a/src/mem/ruby/system/Sequencer.cc
++++ b/src/mem/ruby/system/Sequencer.cc
+@@ -566,6 +566,8 @@
+         delete pkt;
+         rs->m_cache_recorder->enqueueNextFetchRequest();
+     } else if (RubySystem::getCooldownEnabled()) {
++        assert(pkt->req);
++        delete pkt->req;
+         delete pkt;
+         rs->m_cache_recorder->enqueueNextFlushRequest();
+     } else {
