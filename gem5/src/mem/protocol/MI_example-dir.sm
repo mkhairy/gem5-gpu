@@ -105,7 +105,7 @@ machine(Directory, "Directory protocol")
   }
 
   // ** OBJECTS **
-  TBETable TBEs, template="<Directory_TBE>", constructor="m_number_of_TBEs";
+  TBETable TBEs, template="<Directory_TBE>", constructor=1024;
 
   void set_tbe(TBE b);
   void unset_tbe();

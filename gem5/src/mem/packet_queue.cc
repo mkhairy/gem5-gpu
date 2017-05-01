@@ -115,8 +115,8 @@ PacketQueue::schedSendTiming(PacketPtr pkt, Tick when, bool force_order)
     // add a very basic sanity check on the port to ensure the
     // invisible buffer is not growing beyond reasonable limits
     if (transmitList.size() > 100) {
-        panic("Packet queue %s has grown beyond 100 packets\n",
-              name());
+     //   panic("Packet queue %s has grown beyond 100 packets\n",
+     //         name());
     }
 
     // if requested, force the timing to be in-order by changing the when

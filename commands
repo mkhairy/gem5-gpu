@@ -10,9 +10,11 @@ cd gem5
 build/X86_MI_example_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia/backprop/gem5_fusion_backprop -o "16"
 
 cd gem5
-build/X86_MI_example_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/backprop/gem5_fusion_backprop -o "16" --access-host-pagetable
+build/X86_MI_example_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/backprop/gem5_fusion_backprop -o "65536" --access-host-pagetable
 
+build/X86_MI_example_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/bfs/gem5_fusion_bfs -o "/home/mkhairy/gem5-gpu2/benchmarks/data/bfs/graph4096.txt" --num-dirs=4  --access-host-pagetable
 
+build/X86_MI_example_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/vector/gem5_fusion_vector -o "4000000 256" --access-host-pagetable
 
 
 //////
@@ -25,5 +27,22 @@ scons build/X86_VI_hammer_GPU/gem5.opt --default=X86 EXTRAS=../gem5-gpu/src:../g
 
 running
 cd gem5
-build/X86_VI_hammer_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c home/mkhairy/gem5-gpu2/benchmarks/rodinia/backprop/gem5_fusion_backprop -o "16"
+build/X86_VI_hammer_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia/backprop/gem5_fusion_backprop -o "16"
 
+
+build/X86_VI_hammer_GPU/gem5.opt ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia/vector/gem5_fusion_vector -o "3200 256"
+
+//////////////////////////////////////////////////
+build/X86_MI_example_GPU/gem5.opt -d m5out/backprob/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/backprop/gem5_fusion_backprop -o "128" --access-host-pagetable --mem-type=RubyMemoryControl > back_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/bfs/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/bfs/gem5_fusion_bfs -o "/home/mkhairy/gem5-gpu2/benchmarks/data/bfs/graph4096.txt" --access-host-pagetable --mem-type=RubyMemoryControl > bfs_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/cell/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/cell/gem5_fusion_cell -o "32 32 32 2 1" --access-host-pagetable --mem-type=RubyMemoryControl > cell_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/gaussian/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/gaussian/gem5_fusion_gaussian -o "/home/mkhairy/gem5-gpu2/benchmarks/data/gaussian/matrix16.txt" --access-host-pagetable --mem-type=RubyMemoryControl > gaussian_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/hotspot/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/hotspot/gem5_fusion_hotspot -o "512 2 2 /home/mkhairy/gem5-gpu2/benchmarks/data/hotspot/temp_512 /home/mkhairy/gem5-gpu2/benchmarks/data/hotspot/power_512 output.out" --access-host-pagetable --mem-type=RubyMemoryControl > hotspot_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/kmeans/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/kmeans/gem5_fusion_kmeans -o "-o -i  /home/mkhairy/gem5-gpu2/benchmarks/data/kmeans/28k.txt" --access-host-pagetable --mem-type=RubyMemoryControl > kmeans_Ruby.txt
+
+hello
