@@ -1,0 +1,37 @@
+build/X86_MI_example_GPU/gem5.opt -d m5out/backprob/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/backprop/gem5_fusion_backprop -o "128" --access-host-pagetable --mem-type=RubyMemoryControl > back_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/bfs/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/bfs/gem5_fusion_bfs -o "/home/mkhairy/gem5-gpu2/benchmarks/data/bfs/graph4096.txt" --access-host-pagetable --mem-type=RubyMemoryControl > bfs_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/cell/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/cell/gem5_fusion_cell -o "32 32 32 2 1" --access-host-pagetable --mem-type=RubyMemoryControl > cell_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/gaussian/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/gaussian/gem5_fusion_gaussian -o "/home/mkhairy/gem5-gpu2/benchmarks/data/gaussian/matrix16.txt" --access-host-pagetable --mem-type=RubyMemoryControl > gaussian_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/hotspot/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/hotspot/gem5_fusion_hotspot -o "512 2 2 /home/mkhairy/gem5-gpu2/benchmarks/data/hotspot/temp_512 /home/mkhairy/gem5-gpu2/benchmarks/data/hotspot/power_512 output.out" --access-host-pagetable --mem-type=RubyMemoryControl > hotspot_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/kmeans/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/kmeans/gem5_fusion_kmeans -o "-o -i  /home/mkhairy/gem5-gpu2/benchmarks/data/kmeans/28k.txt" --access-host-pagetable --mem-type=RubyMemoryControl > kmeans_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/lud_cuda/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/lud/gem5_fusion_lud -o "-i /home/mkhairy/gem5-gpu2/benchmarks/data/lud/512.dat" --access-host-pagetable --mem-type=RubyMemoryControl > lud_cuda_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/nw/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/nw/gem5_fusion_needle -o "128 10" --access-host-pagetable --mem-type=RubyMemoryControl > needle_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/pathfinder/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/pathfinder/gem5_fusion_pathfinder -o "100000 100 20" --access-host-pagetable --mem-type=RubyMemoryControl > pathfinder_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/srad/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/srad/gem5_fusion_srad -o "512 512 0 127 0 127 0.5 2" --access-host-pagetable --mem-type=RubyMemoryControl > srad_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/vector/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/vector/gem5_fusion_vector -o "32000 256" --access-host-pagetable --mem-type=GDDR5_4000_x64 
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/vector/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/vector/gem5_fusion_vector -o "32000 256" --access-host-pagetable --dir-num=8 > vector_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/MM/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/MM/gem5_fusion_MM -o "256 256 256 256 16 16" --access-host-pagetable --mem-type=RubyMemoryControl > MM_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/MM_Optimzed/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/MM_Optimzed/gem5_fusion_MM_Optmized -o "256 256 256 256 16 16" --access-host-pagetable --mem-type=RubyMemoryControl > MM_Optimzed_Ruby.txt
+
+hello
+
+
+
+not running
+build/X86_MI_example_GPU/gem5.opt -d m5out/nn/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/nn/gem5_fusion_nn -o "filelist_bench -r 5 -lat 30 -lng 90" --access-host-pagetable --mem-type=RubyMemoryControl > nn_Ruby.txt
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/vector/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/vector/gem5_fusion_vector -o "24576 256" --access-host-pagetable --mem-type=GDDR5_4000_x64 
+
