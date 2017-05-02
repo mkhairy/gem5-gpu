@@ -105,7 +105,7 @@ machine(Directory, "Directory protocol")
   }
 
   // ** OBJECTS **
-  TBETable TBEs, template="<Directory_TBE>", constructor=1024;
+  TBETable TBEs, template="<Directory_TBE>", constructor="m_number_of_TBEs";
 
   void set_tbe(TBE b);
   void unset_tbe();
@@ -194,6 +194,21 @@ machine(Directory, "Directory protocol")
     num_functional_writes := num_functional_writes + functionalMemoryWrite(pkt);
     return num_functional_writes;
   }
+
+///////////////////////////////////////////////////////////////////
+  bool IsCPURequest(MachineID Id) {
+   
+//Since there is no way to create NodeId, and we sure there is only directory with Id=0
+//then we test if machine Id = directory idd (which is always zero)!
+     return(machineIDToNodeID(Id) == version);
+  }
+  
+  bool IsGPURequest(MachineID Id) {
+   
+     return(machineIDToNodeID(Id) > version);
+  }
+
+///////////////////////////////////////////////////////////////////
 
   MessageBuffer responseFromMemory;
 
