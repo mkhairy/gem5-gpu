@@ -148,7 +148,7 @@ int MatrixMulti(int numARows, int numAColumns, int numBRows, int numBColumns, in
 	dimBlock = dim3(blockx, blocky);
 	dimGrid = dim3((numCColumns+blockx-1)/blockx, (numCRows+blocky-1)/blocky);
 
-	matrixMultiply<<<dimGrid, dimBlock>>>(deviceA, deviceB, deviceC,numAColumns, numBColumns, numCRows, numCColumns);
+	matrixMultiply<<<dimGrid, dimBlock>>>(hostA, hostB, hostC, numAColumns, numBColumns, numCRows, numCColumns);
 	getLastCudaError("kernel launch failure");
 
 	checkCudaErrors(cudaThreadSynchronize());
