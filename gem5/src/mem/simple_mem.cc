@@ -138,7 +138,7 @@ SimpleMemory::recvTimingReq(PacketPtr pkt)
     if (pkt->isRead() || pkt->isWrite()) {
         // calculate an appropriate tick to release to not exceed
         // the bandwidth limit
-        Tick duration = pkt->getSize() * bandwidth;
+        Tick duration = 0;
 
         // only consider ourselves busy if there is any need to wait
         // to avoid extra events being scheduled for (infinitely) fast
@@ -210,8 +210,7 @@ SimpleMemory::dequeue()
 Tick
 SimpleMemory::getLatency() const
 {
-    return latency +
-        (latency_var ? random_mt.random<Tick>(0, latency_var) : 0);
+    return 0;
 }
 
 void

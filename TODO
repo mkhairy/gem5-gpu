@@ -6,8 +6,29 @@ why DRAM data utilization is different
 how many entris should be there
 
 see why nocopy does  not work
-under the config baseline with fusiona nd MI protcol
+under the config baseline with fusion and MI protcol
 under the output (IPC, L1 cache hit rate, MSHRs)
 config the baseline (memory shouldbe large), L1 cache should be large (read the paper), L3 cahce i
 understand MI protcol
 update the MI protocl for regsion
+
+increase memor BW (memchannels or dir)? 
+can I increase the Bw with our increasing the dir
+can i comment the codes, RubyMemoryControlis just a erturn memory (no real memory)
+
+directory port and trassiton and TBE (the email you sent) -- how to set a limit on the number of TBE per directory -- If I set it, it will not cause any runtime issues
+
+disaable MI between GPUs
+how the l2 cache in connected per memory or per core(attached to L1)
+in MICRO paper, is it one way? i.e. when CPU access, the GPU cache will laso invlaidates
+why it takes so long time
+
+gpu-l2-resource-stalls
+share with us virtual memory paper
+
+--mem-type=RubyMemoryControl
+
+
+mme-channels = play around memory numbers
+increase the directory => show the tracing
+

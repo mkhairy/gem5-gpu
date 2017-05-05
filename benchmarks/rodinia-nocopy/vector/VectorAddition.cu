@@ -78,6 +78,7 @@ void VectorAddition(int N, int threadsPerBlock)
     // Initialize input vectors
     RandomInit(h_A, N);
     RandomInit(h_B, N);
+    RandomInit(h_C, N);
 
     // Allocate vectors in device memory
     //checkCudaErrors( cudaMalloc((void**)&d_A, size) );

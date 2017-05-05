@@ -687,6 +687,7 @@ transition({IM}, {GETX_GPU_GPU, GETX_CPU_GPU, GETX_GPU_CPU} ) {
     i_popIncomingRequestQueue;
   }
 
+
   transition(M, GETX_CPU_GPU, MM) {
     vm_allocateMSHRFromRequestNet;
     f_forwardRequest;

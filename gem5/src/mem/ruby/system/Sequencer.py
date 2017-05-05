@@ -69,7 +69,7 @@ class RubySequencer(RubyPort):
     dcache_hit_latency = Param.Cycles(1, "Data cache hit latency")
     max_outstanding_requests = Param.Int(16,
         "max requests (incl. prefetches) outstanding")
-    deadlock_threshold = Param.Cycles(500000,
+    deadlock_threshold = Param.Cycles(100000000,
         "max outstanding cycles for a request before deadlock/livelock declared")
     using_network_tester = Param.Bool(False, "")
     # gem5-gpu: This is parameterized to not connect components that

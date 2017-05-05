@@ -56,6 +56,10 @@ class TBETable
 
     // Print cache contents
     void print(std::ostream& out) const;
+    int getMapSize() const
+    {
+        return (m_map.size());
+    }
 
   private:
     // Private copy constructor and assignment operator

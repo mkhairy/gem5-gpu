@@ -29,7 +29,20 @@ build/X86_MI_example_GPU/gem5.opt -d m5out/MM_Optimzed/normal ../gem5-gpu/config
 not running
 build/X86_MI_example_GPU/gem5.opt -d m5out/nn/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/nn/gem5_fusion_nn -o "filelist_bench -r 5 -lat 30 -lng 90" --access-host-pagetable --mem-type=RubyMemoryControl > nn_Ruby.txt
 
-build/X86_MI_example_GPU/gem5.opt -d m5out/vector/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/vector/gem5_fusion_vector -o "24576 256" --access-host-pagetable --mem-type=GDDR5_4000_x64  --sc_l1_size=1MB --l1d_size=1MB  
+build/X86_MI_example_GPU/gem5.opt -d m5out/vector/normal --debug-flags=ProtocolTrace ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/vector/gem5_fusion_vector -o "24576 256" --access-host-pagetable --mem-type=GDDR5_4000_x64  --sc_l1_size=1MB --l1d_size=1MB  
+
+//////////////////////////////////////////////
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/hotspot/normal ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/hotspot/gem5_fusion_hotspot -o "512 2 2 /home/mkhairy/gem5-gpu2/benchmarks/data/hotspot/temp_512 /home/mkhairy/gem5-gpu2/benchmarks/data/hotspot/power_512 output.out" --access-host-pagetable --mem-type=SimpleMemory --mem-channels=4 --mem-type=SimpleMemory --mem-channels=4 --sc_l1_size=2MB --sc_l1_assoc=1024 --l1d_size=2MB --l1d_assoc=32 
+
+//////////////////////////////////////////////
+
+build/X86_MI_example_GPU/gem5.opt -d m5out/vector/deadlock128 --debug-flags=ProtocolTrace ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/vector/gem5_fusion_vector -o "10240 256" --access-host-pagetable --mem-type=SimpleMemory --mem-channels=4 --mem-type=SimpleMemory --mem-channels=4 --sc_l1_size=2MB --sc_l1_assoc=1024 --l1d_size=2MB --l1d_assoc=32 --clusters=10
+
+build/Limit128Error/X86_MI_example_GPU/gem5.opt -d m5out/MM/limit32 ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/MM/gem5_fusion_MM -o "256 256 256 256 16 16" --access-host-pagetable --mem-type=SimpleMemory --mem-channels=4 --mem-type=SimpleMemory --mem-channels=4 --sc_l1_size=32kb --sc_l1_assoc=2 --l1d_size=2MB --l1d_assoc=32 
+
+build/Limit32/X86_MI_example_GPU/gem5.opt -d m5out/MM_Optimzed/limit32 ../gem5-gpu/configs/se_fusion.py -c /home/mkhairy/gem5-gpu2/benchmarks/rodinia-nocopy/MM_Optimzed/gem5_fusion_MM_Optmized -o "256 256 256 256 16 16" --access-host-pagetable --mem-type=SimpleMemory --mem-channels=4 --mem-type=SimpleMemory --mem-channels=4 --sc_l1_size=2MB --sc_l1_assoc=1024 --l1d_size=2MB --l1d_assoc=32 
+
 
 
 

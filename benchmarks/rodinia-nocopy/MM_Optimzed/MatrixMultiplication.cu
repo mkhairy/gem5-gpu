@@ -136,6 +136,7 @@ int MatrixMulti(int numARows, int numAColumns, int numBRows, int numBColumns, in
     // Initialize input vectors
     RandomInit(hostA, numARows*numAColumns);
     RandomInit(hostB, numBRows*numBColumns);
+    RandomInit(hostC, numBRows*numBColumns);
 
     cout<<"The dimensions of A are "<<numARows<<" x "<<numAColumns<<endl;
     cout<<"The dimensions of B are "<<numBRows<<" x "<<numBColumns<<endl;

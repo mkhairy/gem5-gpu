@@ -29,6 +29,10 @@
 #ifndef __MEM_RUBY_SLICC_INTERFACE_RUBYSLICC_COMPONENTMAPPINGS_HH__
 #define __MEM_RUBY_SLICC_INTERFACE_RUBYSLICC_COMPONENTMAPPINGS_HH__
 
+#include <iostream>
+
+using namespace std;
+
 #include "mem/protocol/MachineType.hh"
 #include "mem/ruby/common/Address.hh"
 #include "mem/ruby/common/MachineID.hh"
@@ -41,6 +45,25 @@ inline NodeID
 map_Address_to_DirectoryNode(Addr addr)
 {
     return DirectoryMemory::mapAddressToDirectoryVersion(addr);
+}
+
+// Map address address to region
+inline Addr
+map_Address_to_Region(Addr addr, unsigned int regionSize)
+{
+    long unsigned int mask;
+    mask = (long unsigned int)~0 << regionSize;
+
+   //cout<<std::hex<<"addr = "<<std::hex<<addr << ", mask = "<<std::hex<<mask<<", region = "<<(addr & mask)<<endl;
+   return (addr & mask);
+}
+
+// Map address address to region
+inline Addr
+next_Address_in_Region(Addr region, unsigned int count, Addr addr)
+{
+   //cout<<std::hex<<"addr = "<<addr<<", region = "<<region<<", count = "<<count<<" "<<", next address = "<<std::hex<<(region + count * 128)<<endl;
+   return (region + count * 128);
 }
 
 // used to determine the home directory
